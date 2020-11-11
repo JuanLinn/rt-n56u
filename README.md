@@ -1243,4 +1243,3 @@ fakeroot ./build_firmware_modify K2P-5.0
 
   </body>
 </html>
-
