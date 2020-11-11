@@ -1,0 +1,82 @@
+defaults.h
+时区: #define DEF_TIMEZONE           CST-8  
+无线频道  #define DEF_WLAN_2G_CC		"CN"
+          #define DEF_WLAN_5G_CC		"US"
+SSID名字  #define DEF_WLAN_2G_SSID	BOARD_PID "_%s"
+          #define DEF_WLAN_5G_SSID	BOARD_PID "_5G_%s"  
+
+
+detect_internet.c
+修改“已连接到互联网灯光行为”
+#if defined (BOARD_GPIO_LED_WAN)
+		if (nvram_get_int("front_led_wan") == 3){
+			LED_CONTROL(BOARD_GPIO_LED_WAN, (link_internet) ? LED_ON : LED_OFF);
+			LED_CONTROL(BOARD_GPIO_LED_WIFI, (link_internet) ? LED_OFF : LED_ON);
+		}
+#endif
+
+detect_link.c
+修改“WAN建立连接”(front_led_x == 1)    “已连接到ISP”灯光行为(front_led_x == 2)
+#if defined (BOARD_GPIO_LED_WAN)
+		front_led_x = nvram_get_int("front_led_wan");
+		if (front_led_x == 1) {
+			LED_CONTROL(BOARD_GPIO_LED_WAN, (dl_status_wan) ? LED_ON : LED_OFF);
+			LED_CONTROL(BOARD_GPIO_LED_WIFI, (dl_state) ? LED_OFF : LED_ON);
+		}
+		else if (front_led_x == 2) {
+			if (!get_wan_wisp_active(NULL) && !get_usb_modem_wan(0)) {
+				int dl_state = (dl_status_wan && has_wan_gw4() && has_wan_ip4(1)) ? 1 : 0;
+				LED_CONTROL(BOARD_GPIO_LED_WAN, (dl_state) ? LED_ON : LED_OFF);
+				LED_CONTROL(BOARD_GPIO_LED_WIFI, (dl_state) ? LED_OFF : LED_ON);
+			}
+		}
+#endif
+
+
+defaults.c
+LED设置
+	{ "front_led_all", "1" },
+	{ "front_led_wan", "3" },
+	{ "front_led_lan", "2" },
+	{ "front_led_wif", "1" },
+	{ "front_led_usb", "1" },
+	{ "front_led_pwr", "1" },
+
+WPS 按钮功能设置
+{ "ez_action_short", "7" },
+
+                                                    <option value="0" ><#TweaksWPSItem00#></option>
+                                                    <option value="1" ><#TweaksWPSItem01#></option>
+                                                    <option value="2" ><#TweaksWPSItem02#> 2.4</option>
+                                                    <option value="3" ><#TweaksWPSItem02#> 5</option>
+                                                    <option value="4" ><#TweaksWPSItem02#> 2.4 & 5</option>
+                                                    <option value="11"><#TweaksWPSItem03#> 2.4</option>
+                                                    <option value="12"><#TweaksWPSItem03#> 5</option>
+                                                    <option value="13"><#TweaksWPSItem03#> 2.4 & 5</option>
+                                                    <option value="5" ><#TweaksWPSItem10#></option>
+                                                    <option value="21"><#TweaksWPSItem11#></option>
+                                                    <option value="22"><#TweaksWPSItem12#></option>
+                                                    <option value="10"><#TweaksWPSItem14#></option>
+                                                    <option value="6" ><#TweaksWPSItem20#></option>
+                                                    <option value="7" ><#TweaksWPSItem21#></option>
+                                                    <option value="8" ><#TweaksWPSItem22#></option>
+                                                    <option value="9" ><#TweaksWPSItem32#> (arg: 1)</option>
+
+硬件 NAT 加速: "hw_nat_mode"
+                           <option value="0" <% nvram_match_x("", "hw_nat_mode", "0", "selected"); %>>Offload TCP for LAN</option>
+                           <option value="1" <% nvram_match_x("", "hw_nat_mode", "1", "selected"); %>>Offload TCP for LAN/WLAN</option>
+                           <option value="3" <% nvram_match_x("", "hw_nat_mode", "3", "selected"); %>>Offload TCP/UDP for LAN</option>
+                           <option value="4" <% nvram_match_x("", "hw_nat_mode", "4", "selected"); %>>Offload TCP/UDP for LAN/WLAN</option>
+                           <option value="2" <% nvram_match_x("", "hw_nat_mode", "2", "selected"); %>>Disable (Slow)</option>
+
+
+board.h
+设备名称:
+#define BOARD_NAME		"K2P"
+
+
+
+
+
+versions.inc
+固件版本
