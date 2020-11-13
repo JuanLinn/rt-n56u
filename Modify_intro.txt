@@ -1,5 +1,5 @@
 defaults.h
-时区: #define DEF_TIMEZONE           CST-8  
+时区: #define DEF_TIMEZONE           CST-8  EST5EDT
 无线频道  #define DEF_WLAN_2G_CC		"CN"
           #define DEF_WLAN_5G_CC		"US"
 SSID名字  #define DEF_WLAN_2G_SSID	BOARD_PID "_%s"
